@@ -1,27 +1,62 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ArrowRight } from "lucide-react";
+import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-motion";
 import ShinyButton from "./ui/shiny-button";
 
 const navItems = [
   { label: "Home", to: "/" },
   { label: "Products", to: "/products" },
   { label: "Projects", to: "/projects" },
-  { label: "Manufacturing", to: "/manufacturing" },
-  { label: "Design", to: "/design" },
-  { label: "Export", to: "/export" },
+  { label: "About", to: "/about" },
+  { label: "Services", to: "/services" },
+  { label: "Contact Us", to: "/contact" },
 ];
 
-function getLinkClasses(isActive) {
-  return [
-    "transition-colors duration-300",
-    isActive ? "text-white" : "text-white/65 hover:text-white",
-  ].join(" ");
-}
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 40, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+  },
+};
 
 export default function Navbar() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [hoveredPath, setHoveredPath] = useState(null);
+
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious();
+    
+    if (latest <= 50) {
+      setIsScrolled(false);
+      setIsHidden(false);
+    } else {
+      setIsScrolled(true);
+      if (latest > previous && latest > 150) {
+        setIsHidden(true);
+      } else {
+        setIsHidden(false);
+      }
+    }
+  });
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -30,103 +65,190 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
-  const isHome = location.pathname === "/";
   const closeMenu = () => setIsOpen(false);
-
-  const shellClasses = useMemo(
-    () =>
-      [
-        "fixed inset-x-0 top-0 z-[90]",
-        isHome
-          ? "bg-gradient-to-b from-black/55 via-black/20 to-transparent"
-          : "bg-zinc-950/80 backdrop-blur-xl border-b border-white/10",
-      ].join(" "),
-    [isHome]
-  );
 
   return (
     <>
-      <header className={shellClasses}>
-        <div className="mx-auto flex  max-w-7xl items-center justify-between px-4 py-4 md:px-6">
-          <Link to="/" className="flex items-center gap-3" onClick={closeMenu}>
-            <img src="/logo2.png" alt="Duct" className="w-24 scale-150 " />
-                     </Link>
+      {/* Desktop & Main Header */}
+      <motion.header
+        variants={{
+          visible: { y: 0 },
+          hidden: { y: "-100%" },
+        }}
+        animate={isHidden ? "hidden" : "visible"}
+        transition={{ duration: 0.35, ease: "easeInOut" }}
+        className={`fixed inset-x-0 top-0 z-[90] transition-colors duration-300 ${
+          isScrolled
+            ? "bg-[#050505]/90 backdrop-blur-xl shadow-2xl"
+            : "bg-transparent"
+        }`}
+      >
+        {/* هێڵی خوارەوە کە تەنها لەکاتی سکڕۆڵدا دەردەکەوێت */}
+        <div 
+          className={`absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#b7a801]/30 to-transparent transition-opacity duration-300 ${
+            isScrolled ? "opacity-100" : "opacity-0"
+          }`} 
+        />
 
-          <nav className="hidden items-center gap-8 lg:flex">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) => getLinkClasses(isActive)}
-                onClick={closeMenu}
-              >
-                {item.label}
-              </NavLink>
-            ))}
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 md:px-10 h-24">
+          
+          {/* Logo */}
+          <Link to="/" className="relative z-50 flex items-center group" onClick={closeMenu}>
+            <div className="relative flex items-center justify-center transition-transform duration-300 group-hover:opacity-80">
+               <img src="/logo2.png" alt="Duct" className="w-24 md:w-28 scale-150 object-contain drop-shadow-2xl" />
+            </div>
+          </Link>
+
+          {/* Desktop Navigation (Premium Editorial Style) */}
+          {/* لابردنی بۆکسەکان و چوارچێوەکان، تەنها تێکستی خاوێن هەیە */}
+          <nav className="hidden lg:flex items-center gap-8 relative h-full">
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.to;
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onMouseEnter={() => setHoveredPath(item.to)}
+                  onMouseLeave={() => setHoveredPath(null)}
+                  className="relative flex items-center h-full text-[13px] tracking-[0.1em] uppercase font-medium transition-colors"
+                >
+                  {/* تێکستەکە - ئەکتیڤ بێت لار و سپی دەبێت */}
+                  <span className={`relative z-10 transition-all duration-300 ${
+                    isActive 
+                      ? "text-white italic" 
+                      : "text-zinc-500 hover:text-white"
+                  }`}>
+                    {item.label}
+                  </span>
+
+                  {/* هێڵی خلیسکێنە لە سەرەوەی لینکەکە (Magic Line) */}
+                  {hoveredPath === item.to && (
+                    <motion.div
+                      layoutId="navbar-top-line"
+                      className="absolute top-0 left-0 right-0 h-[2px] bg-[#b7a801]"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                  
+                  {/* هێڵی ئەکتیڤ بوون (هەمیشە دەمێنێتەوە کاتێک لە پەیجەکەیت) */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="navbar-active-line"
+                      className="absolute top-0 left-0 right-0 h-[2px] bg-white shadow-[0_0_10px_#ffffff]"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                </Link>
+              );
+            })}
           </nav>
 
-          <div className="hidden lg:flex">
-            <Link to="/projects" onClick={closeMenu}>
-              <ShinyButton className="px-5 py-3">Explore Work</ShinyButton>
+          {/* Desktop Call to Action (Minimalist Link لەبری دوگمەی قەرەباڵغ) */}
+          <div className="hidden lg:flex items-center relative z-50">
+            <Link 
+              to="/projects"
+              className="group flex items-center gap-3 text-white border-b border-[#b7a801]/30 pb-1 hover:border-[#b7a801] transition-colors"
+            >
+              <span className="text-[11px] font-semibold tracking-widest uppercase">Start Project</span>
+              <ArrowRight className="w-3.5 h-3.5 text-[#b7a801] transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </div>
 
+          {/* Mobile Menu Button */}
           <button
             type="button"
             onClick={() => setIsOpen((current) => !current)}
-            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white backdrop-blur transition hover:bg-white/10 lg:hidden"
-            aria-label={isOpen ? "Close menu" : "Open menu"}
-            aria-expanded={isOpen}
+            className="flex h-12 w-12 relative z-[100] items-center justify-end text-white transition-all duration-300 lg:hidden"
           >
-            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {isOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
           </button>
         </div>
-      </header>
+      </motion.header>
 
-      <div
-        className={`fixed inset-0 z-[89] bg-black/70 backdrop-blur-md transition duration-300 lg:hidden ${
-          isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
-        }`}
-      >
-        <div className="flex min-h-screen flex-col px-4 pb-8 pt-24">
-          <div className="rounded-[2rem] border border-white/10 bg-zinc-950/95 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.45)]">
-            <div className="mb-6">
-              <p className="text-xs uppercase tracking-[0.32em] text-[#b7a801]">
+      {/* Mobile Menu (Editorial & Premium Design) */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ clipPath: "inset(0 0 100% 0)" }}
+            animate={{ clipPath: "inset(0 0 0% 0)" }}
+            exit={{ clipPath: "inset(0 0 100% 0)" }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-[85] bg-[#050505] lg:hidden flex flex-col"
+          >
+            <div className="absolute top-0 right-0 w-[80vw] h-[80vw] bg-[#b7a801]/5 blur-[100px] rounded-full pointer-events-none translate-x-1/3 -translate-y-1/3"></div>
+
+            <div className="flex-1 flex flex-col justify-center px-8 pt-20 pb-10 relative z-10 h-full overflow-y-auto">
+              
+              <p className="text-[#b7a801] text-xs font-semibold tracking-[0.4em] uppercase mb-8 ml-2">
                 Navigation
               </p>
-              <p className="mt-2 text-sm text-white/55">
-                Explore all pages from one responsive menu.
-              </p>
+
+              <motion.nav 
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="flex flex-col gap-6 md:gap-8"
+              >
+                {navItems.map((item, i) => {
+                  const isActive = location.pathname === item.to;
+                  
+                  return (
+                    <motion.div key={item.to} variants={itemVariants}>
+                      <NavLink
+                        to={item.to}
+                        onClick={closeMenu}
+                        className={`group flex items-center gap-4 w-fit`}
+                      >
+                        <span className={`h-[2px] transition-all duration-500 ease-out bg-[#b7a801] ${
+                          isActive ? "w-8 md:w-12" : "w-0 group-hover:w-6"
+                        }`} />
+                        
+                        <span className={`text-4xl md:text-6xl tracking-tight transition-all duration-500 ${
+                          isActive 
+                            ? "text-white font-medium italic" 
+                            : "text-zinc-500 font-light hover:text-white hover:translate-x-2"
+                        }`}>
+                          {item.label}
+                        </span>
+                      </NavLink>
+                    </motion.div>
+                  );
+                })}
+              </motion.nav>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+                className="mt-16 ml-2"
+              >
+                <Link to="/contact" onClick={closeMenu} className="inline-flex items-center gap-3 text-white border-b border-[#b7a801]/50 pb-2 hover:border-[#b7a801] transition-colors">
+                  <span className="text-sm font-medium tracking-widest uppercase">Start a Project</span>
+                  <ArrowRight className="w-4 h-4 text-[#b7a801]" />
+                </Link>
+              </motion.div>
+
             </div>
 
-            <div className="flex flex-col gap-2">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  onClick={closeMenu}
-                  className={({ isActive }) =>
-                    [
-                      "rounded-2xl border px-4 py-4 text-base transition",
-                      isActive
-                        ? "border-[#b7a801]/30 bg-[#b7a801]/10 text-white"
-                        : "border-white/10 bg-white/5 text-white/75 hover:bg-white/10 hover:text-white",
-                    ].join(" ")
-                  }
-                >
-                  {item.label}
-                </NavLink>
-              ))}
-            </div>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1, duration: 0.5 }}
+              className="px-8 pb-8 flex justify-between items-end text-[10px] md:text-xs text-zinc-500 uppercase tracking-[0.2em] relative z-10"
+            >
+              <div className="flex flex-col gap-2">
+                <a href="mailto:info@modernduct.com" className="hover:text-white transition-colors">info@modernduct.com</a>
+                <a href="tel:+9640000000000" className="hover:text-white transition-colors">+964 000 000 0000</a>
+              </div>
+              <div className="text-right">
+                <p>Sulaymaniyah</p>
+                <p>Iraq</p>
+              </div>
+            </motion.div>
 
-            <Link to="/projects" className="mt-6 inline-flex w-full" onClick={closeMenu}>
-              <ShinyButton className="w-full justify-center px-5 py-3">
-                Explore Work
-              </ShinyButton>
-            </Link>
-          </div>
-        </div>
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
