@@ -2,16 +2,10 @@ import { lazy, Suspense } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import ShinyButton from "./ui/shiny-button";
 import GradientHeroTitle from "./ui/gradient-hero-title.jsx";
+import { socialLinks } from "../data/socialLinks";
 import "./hero.css";
 
 const ElevatorVisual = lazy(() => import("./ui/elevator-visual.jsx"));
-
-const SOCIAL_LINKS = [
-  { name: "INSTAGRAM", url: "https://www.instagram.com/grandmotorsiraq" },
-  { name: "FACEBOOK", url: "https://www.facebook.com/grandmotorsiraq" },
-  { name: "TIKTOK", url: "https://www.tiktok.com/grandmotorsiraq" },
-  { name: "SNAPCHAT", url: "https://snapchat.com/adds/grandmotorsiraq" },
-];
 
 function HeroBackground() {
   return (
@@ -25,7 +19,7 @@ function SocialRail() {
   return (
     <div className="absolute left-8 top-1/2 z-20 hidden -translate-y-1/2 flex-col items-center gap-8 2xl:flex">
       <div className="h-24 w-px bg-gradient-to-b from-transparent via-white/30 to-transparent" />
-      {SOCIAL_LINKS.map((item) => (
+      {socialLinks.map((item) => (
         <a
           key={item.name}
           href={item.url}
@@ -33,7 +27,7 @@ function SocialRail() {
           rel="noreferrer"
           className="text-[10px] tracking-[0.35em] text-white/50 transition-colors duration-300 [writing-mode:vertical-rl] hover:text-white"
         >
-          {item.name}
+          {item.label}
         </a>
       ))}
       <div className="h-24 w-px bg-gradient-to-b from-transparent via-white/30 to-transparent" />

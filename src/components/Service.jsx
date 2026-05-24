@@ -1,6 +1,6 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom"; // ئەگەر Next.js بەکاردەهێنیت ئەمە بگۆڕە بۆ next/link
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import GradientTitle from "./ui/gradiant-title";
 import  Button  from "./ui/shiny-button";
 // تێبینی: دڵنیابە لەوەی پاتەکانی GradientTitle ڕاستن بەپێی فۆڵدەرەکانی خۆت
@@ -11,8 +11,7 @@ const MotionDiv = motion.div;
 // لێرەدا دەقەکانی خۆتم دابەشکردووە بۆ سەر شێوازی دیزاینە نوێیەکە
 const serviceSections = [
   {
-    // تکایە لێرەدا لینکی وێنەکانت بگۆڕە بۆ وێنەی کارگەکەی خۆتان
-    imgUrl: "/assets/images/modern-1.jpeg", 
+    mediaUrl: "/assets/videos/manufacturing.mp4",
     subheading: "High Precision Production",
     heading: "Manufacturing",
     title: "Production of duct diffusers & air systems",
@@ -21,10 +20,10 @@ const serviceSections = [
     descriptionTwo:
       "Our manufacturing process ensures every product meets strict quality standards, delivering durability, optimal airflow, and long-lasting performance.",
     buttonLabel: "Explore Manufacturing",
-    link: "/manufacturing"
+    link: "/services"
   },
   {
-    imgUrl: "/assets/images/modern-2.jpeg",
+    mediaUrl: "/assets/videos/products.mp4",
     subheading: "Engineering Solutions",
     heading: "Design",
     title: "Detailed engineering for ventilation",
@@ -33,10 +32,10 @@ const serviceSections = [
     descriptionTwo:
       "Our expert team uses advanced software to map out air distribution, guaranteeing that the final installation functions flawlessly in any architectural setup.",
     buttonLabel: "View Design Services",
-    link: "/design"
+    link: "/services"
   },
   {
-    imgUrl: "/assets/images/modern-3.jpeg",
+    mediaUrl: "/assets/videos/export.mp4",
     subheading: "Global Reach",
     heading: "Export",
     title: "Delivering quality locally and abroad",
@@ -45,7 +44,7 @@ const serviceSections = [
     descriptionTwo:
       "We handle the logistics, packaging, and shipping processes with the utmost care, giving our partners confidence in our reliable supply chain.",
     buttonLabel: "Learn About Export",
-    link: "/export"
+    link: "/services"
   },
 ];
 
@@ -68,11 +67,11 @@ const Service = () => {
       </div>
 
       {/* Parallax Content Sections */}
-      <div>
+      <div className=" container mx-auto">
         {serviceSections.map((section) => (
           <TextParallaxContent
             key={section.heading}
-            imgUrl={section.imgUrl}
+            mediaUrl={section.mediaUrl}
             subheading={section.subheading}
             heading={section.heading}
           >
@@ -84,7 +83,7 @@ const Service = () => {
   );
 };
 
-const TextParallaxContent = ({ imgUrl, subheading, heading, children }) => {
+const TextParallaxContent = ({ mediaUrl, subheading, heading, children }) => {
   return (
     <div
       style={{
@@ -93,7 +92,7 @@ const TextParallaxContent = ({ imgUrl, subheading, heading, children }) => {
       }}
     >
       <div className="relative h-[130vh]">
-        <StickyImage imgUrl={imgUrl} />
+        <StickyImage mediaUrl={mediaUrl} />
         <OverlayCopy heading={heading} subheading={subheading} />
       </div>
       {children}
@@ -101,8 +100,14 @@ const TextParallaxContent = ({ imgUrl, subheading, heading, children }) => {
   );
 };
 
-const StickyImage = ({ imgUrl }) => {
+const StickyImage = ({ mediaUrl }) => {
   const targetRef = useRef(null);
+  const videoRef = useRef(null);
+  const isNearViewport = useInView(targetRef, {
+    margin: "300px 0px",
+    once: true,
+  });
+  const [shouldLoadMedia, setShouldLoadMedia] = useState(false);
   const { scrollYProgress } = useScroll({
     target: targetRef,
     offset: ["end end", "end start"],
@@ -110,7 +115,26 @@ const StickyImage = ({ imgUrl }) => {
 
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.5]);
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
-  const isVideo = /\.(mp4|webm|ogg)(\?.*)?$/i.test(imgUrl);
+  const isVideo = /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(mediaUrl);
+
+  useEffect(() => {
+    if (isNearViewport) {
+      setShouldLoadMedia(true);
+    }
+  }, [isNearViewport]);
+
+  useEffect(() => {
+    if (!videoRef.current || !shouldLoadMedia) {
+      return;
+    }
+
+    const video = videoRef.current;
+    const playPromise = video.play();
+
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {});
+    }
+  }, [shouldLoadMedia]);
 
   return (
     <MotionDiv
@@ -120,23 +144,25 @@ const StickyImage = ({ imgUrl }) => {
         top: IMG_PADDING,
         scale,
       }}
-      className="sticky z-0 overflow-hidden rounded-3xl border border-white/10"
+      className="sticky z-0 overflow-hidden rounded-3xl border border-white/20"
     >
       {isVideo ? (
         <video
-          src={imgUrl}
-          autoPlay
+          ref={videoRef}
+          src={shouldLoadMedia ? mediaUrl : undefined}
+          autoPlay={shouldLoadMedia}
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
+          disablePictureInPicture
           className="absolute inset-0 h-full w-full object-cover brightness-75"
         />
       ) : (
         <div
           className="absolute inset-0 bg-cover bg-center brightness-75 transition-all duration-700 hover:brightness-100"
           style={{
-            backgroundImage: `url(${imgUrl})`,
+            backgroundImage: `url(${mediaUrl})`,
           }}
         />
       )}
@@ -168,7 +194,7 @@ const OverlayCopy = ({ subheading, heading }) => {
       <p className="mb-2 text-center text-lg md:mb-4 md:text-xl font-medium tracking-widest text-duct-blue uppercase">
         {subheading}
       </p>
-      <p className="max-w-5xl text-center text-5xl   md:text-8xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 drop-shadow-2xl">
+      <p className="max-w-5xl text-center text-5xl   md:text-8xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/30 drop-shadow-2xl">
         {heading}
       </p>
     </MotionDiv>

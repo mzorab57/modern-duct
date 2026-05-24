@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X, ArrowRight, ArrowUpRight, MessageCircle } from "lucide-react";
 import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-motion";
-import ShinyButton from "./ui/shiny-button";
+import { socialLinks, whatsappHref, whatsappNumber } from "../data/socialLinks";
 
 const navItems = [
   { label: "Home", to: "/" },
@@ -189,7 +189,7 @@ export default function Navbar() {
                 animate="visible"
                 className="flex flex-col gap-6 md:gap-8"
               >
-                {navItems.map((item, i) => {
+                {navItems.map((item) => {
                   const isActive = location.pathname === item.to;
                   
                   return (
@@ -228,6 +228,57 @@ export default function Navbar() {
                 </Link>
               </motion.div>
 
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.92, duration: 0.5 }}
+                className="mt-10"
+              >
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group flex items-center justify-between rounded-[1.75rem] border border-[#b7a801]/20 bg-[#b7a801]/8 px-5 py-4"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="rounded-2xl bg-[#b7a801]/15 p-3 text-[#d7c82c]">
+                      <MessageCircle className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.35em] text-zinc-500">
+                        WhatsApp
+                      </p>
+                      <p className="mt-1 text-sm text-white">{whatsappNumber}</p>
+                    </div>
+                  </div>
+                  <ArrowUpRight className="h-5 w-5 text-[#d7c82c] transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </a>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.02, duration: 0.5 }}
+                className="mt-8"
+              >
+                <p className="mb-4 ml-2 text-[10px] font-semibold uppercase tracking-[0.4em] text-zinc-500">
+                  Follow Us
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {socialLinks.map((social) => (
+                    <a
+                      key={social.name}
+                      href={social.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-full border border-zinc-800 bg-zinc-900/80 px-4 py-2.5 text-xs uppercase tracking-[0.2em] text-zinc-300 transition-all hover:border-[#b7a801]/30 hover:text-white"
+                    >
+                      {social.name}
+                    </a>
+                  ))}
+                </div>
+              </motion.div>
+
             </div>
 
             <motion.div 
@@ -238,7 +289,7 @@ export default function Navbar() {
             >
               <div className="flex flex-col gap-2">
                 <a href="mailto:info@modernduct.com" className="hover:text-white transition-colors">info@modernduct.com</a>
-                <a href="tel:+9640000000000" className="hover:text-white transition-colors">+964 000 000 0000</a>
+                <a href={whatsappHref} target="_blank" rel="noreferrer" className="hover:text-white transition-colors">{whatsappNumber}</a>
               </div>
               <div className="text-right">
                 <p>Sulaymaniyah</p>

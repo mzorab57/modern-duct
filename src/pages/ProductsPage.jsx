@@ -116,7 +116,7 @@ and images for each product.
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.03 }}
-              className="group overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/5 shadow-[0_18px_60px_rgba(0,0,0,0.24)] backdrop-blur-md transition hover:-translate-y-1 hover:border-white/20"
+              className="group overflow-hidden rounded-[1rem] border border-white/10 bg-white/5 shadow-[0_18px_60px_rgba(0,0,0,0.24)] backdrop-blur-md transition hover:-translate-y-1 hover:border-white/20"
             >
               <div className="relative overflow-hidden">
                 <img
@@ -202,7 +202,7 @@ and images for each product.
         </div>
 
         {filteredProducts.length === 0 ? (
-          <div className="mt-12 rounded-[2rem] border border-dashed border-white/10 bg-white/5 px-6 py-12 text-center text-zinc-400">
+          <div className="mt-12 rounded-[1rem] border border-dashed border-white/10 bg-white/5 px-6 py-12 text-center text-zinc-400">
             هیچ بەرهەمێک بۆ ئەم category ـە نەدۆزرایەوە.
           </div>
         ) : null}

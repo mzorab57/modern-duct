@@ -2,25 +2,33 @@ import { motion } from "framer-motion";
 import GradientTitle from "./ui/gradiant-title";
 import { projects } from "../data/projects";
 
-const partnerNames = projects.map((project) => ({
+const partnerNames = projects
+  .filter((project) => project.logo)
+  .map((project) => ({
   id: project.id,
   name: project.name,
   title: project.title,
+  logo: project.logo,
 }));
 
-const sectors = [...new Set(projects.map((project) => project.sector))];
 const firstRow = partnerNames.slice(0, 8);
 const secondRow = partnerNames.slice(8);
 
 function PartnerChip({ partner }) {
   return (
-    <div className="flex  items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.18)] backdrop-blur-md">
-      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-duct-yellow/15 text-sm font-medium text-duct-yellow">
-        {partner.id}
+    <div className="flex min-w-[240px] items-center gap-4 rounded-[1.5rem] border border-white/10 bg-white/5 px-4 py-4 shadow-[0_10px_30px_rgba(0,0,0,0.18)] backdrop-blur-md">
+      <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white px-2 py-2">
+        <img
+          src={partner.logo}
+          alt={partner.name}
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-contain"
+        />
       </div>
       <div>
         <p className="text-sm font-medium text-white">{partner.name}</p>
-        <p className="text-xs text-white/45">{partner.title}</p>
+        {/* <p className="mt-1 text-xs text-white/45">{partner.title}</p> */}
       </div>
     </div>
   );
@@ -63,13 +71,13 @@ export default function PartnersSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="relative z-10 grid gap-10 lg:grid-cols-[0.95fr_1.05fr] px-4 lg:items-end"
+          className="relative z-10 grid gap-10  px-4 lg:items-end"
         >
-          <div className="max-w-3xl ">
+          <div className="flex flex-col lg:flex-row lg:items-center">
+            <div className="mt-4 ">
             <p className="text-xs uppercase tracking-[0.35em] text-[#b7a801]">
               Partners
             </p>
-            <div className="mt-4 max-w-3xl">
               <GradientTitle title="Trusted by Leading Partners" />
             </div>
             <p className="mt-5 max-w-2xl text-base leading-8 text-zinc-400 md:text-lg">
@@ -78,37 +86,11 @@ export default function PartnersSection() {
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5 backdrop-blur-md">
-              <p className="text-xs uppercase tracking-[0.25em] text-white/45">
-                Active Partners
-              </p>
-              <p className="mt-3 text-3xl font-semibold text-white">
-                {partnerNames.length}+
-              </p>
-            </div>
-            <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5 backdrop-blur-md">
-              <p className="text-xs uppercase tracking-[0.25em] text-white/45">
-                Sectors
-              </p>
-              <p className="mt-3 text-3xl font-semibold text-white">
-                {sectors.length}
-              </p>
-            </div>
-            <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5 backdrop-blur-md">
-              <p className="text-xs uppercase tracking-[0.25em] text-white/45">
-                Featured Cases
-              </p>
-              <p className="mt-3 text-3xl font-semibold text-white">
-                {projects.filter((project) => project.featured).length}
-              </p>
-            </div>
-          </div>
         </motion.div>
 
         <div className="relative z-10 mt-12 space-y-4">
           <PartnerRow items={firstRow} />
-          <PartnerRow items={secondRow} reverse />
+          {secondRow.length ? <PartnerRow items={secondRow} reverse /> : null}
         </div>
       </div>
     </section>

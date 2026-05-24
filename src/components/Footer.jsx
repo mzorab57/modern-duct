@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { ArrowUpRight, ArrowRight } from "lucide-react";
+import { ArrowUpRight, MessageCircle } from "lucide-react";
+import { socialLinks, whatsappHref, whatsappNumber } from "../data/socialLinks";
 
 const quickLinks = [
   { label: "Home", to: "/" },
@@ -16,7 +17,7 @@ const serviceLinks = [
 
 const contactInfo = [
   { label: "Location", value: "Sulaymaniyah City, Iraq" },
-  { label: "Phone", value: "+964 (0) 000 000 0000" },
+  { label: "WhatsApp", value: whatsappNumber, href: whatsappHref },
   { label: "Email", value: "info@modernduct.com" },
 ];
 
@@ -61,7 +62,7 @@ export default function Footer() {
           <div className="md:col-span-4">
             <p className="text-xs uppercase tracking-[0.3em] text-zinc-600 mb-8">Navigation</p>
             <ul className="flex flex-col">
-              {[...quickLinks, ...serviceLinks].map((item, i) => (
+              {[...quickLinks, ...serviceLinks].map((item) => (
                 <li key={item.to} className="border-b border-zinc-800/50">
                   <Link
                     to={item.to}
@@ -84,20 +85,56 @@ export default function Footer() {
               {contactInfo.map((item) => (
                 <div key={item.label} className="group">
                   <p className="text-sm text-zinc-500 mb-1">{item.label}</p>
-                  <p className="text-lg text-white font-light transition-colors group-hover:text-[#b7a801]">
-                    {item.value}
-                  </p>
+                  {item.href ? (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-lg text-white font-light transition-colors group-hover:text-[#b7a801]"
+                    >
+                      {item.value}
+                    </a>
+                  ) : (
+                    <p className="text-lg text-white font-light transition-colors group-hover:text-[#b7a801]">
+                      {item.value}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
 
-            {/* Social Links (ئەگەر هەتانە) */}
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-10 group flex items-center justify-between rounded-[1.6rem] border border-[#b7a801]/20 bg-[#b7a801]/8 px-5 py-4 transition hover:border-[#b7a801]/40 hover:bg-[#b7a801]/12"
+            >
+              <div className="flex items-center gap-3">
+                <div className="rounded-2xl bg-[#b7a801]/15 p-3 text-[#d7c82c]">
+                  <MessageCircle className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-zinc-500">
+                    WhatsApp
+                  </p>
+                  <p className="mt-1 text-sm text-white">{whatsappNumber}</p>
+                </div>
+              </div>
+              <ArrowUpRight className="h-5 w-5 text-[#d7c82c] transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
+            </a>
+
             <div className="mt-16">
               <p className="text-xs uppercase tracking-[0.3em] text-zinc-600 mb-4">Follow Us</p>
-              <div className="flex gap-4">
-                {['LinkedIn', 'Instagram', 'Facebook'].map((social) => (
-                  <a key={social} href="#" className="text-sm text-zinc-400 hover:text-white transition-colors underline underline-offset-4 decoration-zinc-800 hover:decoration-white">
-                    {social}
+              <div className="flex flex-wrap gap-3">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.name}
+                    href={social.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-full border border-zinc-800 bg-zinc-950/60 px-4 py-2 text-sm text-zinc-300 transition-all hover:border-[#b7a801]/30 hover:text-white"
+                  >
+                    {social.name}
                   </a>
                 ))}
               </div>
@@ -117,7 +154,8 @@ export default function Footer() {
           </div>
 
           {/* ناوی زەبەلاحی کۆمپانیا (Ultra Premium Signature) */}
-          <h1 className="text-[12vw] md:text-[14vw] font-black tracking-tighter leading-none text-zinc-900/40 select-none text-center w-full overflow-hidden mt-8 md:-mt-10">
+          <h1 className="text-[2.5rem] sm:text-[5.5rem] md:text-[6.5rem] lg:text-[7.5rem] xl:text-[10.5rem] opacity-35 mx-auto  tracking-wide uppercase text-center  w-full
+     font-bold leading-tight bg-gradient-to-r from-[#d7c82c]  to-duct-white bg-clip-text text-transparent">
             MODERNDUCT
           </h1>
         </div>

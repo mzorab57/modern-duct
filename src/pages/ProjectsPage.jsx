@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { projects } from "../data/projects";
+import GradientTitle from "@/components/ui/gradiant-title";
 
 export default function ProjectsPage() {
   return (
@@ -11,21 +12,18 @@ export default function ProjectsPage() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mx-auto max-w-4xl text-center"
+          className=" text-center"
         >
-          <p className="text-xs uppercase tracking-[0.35em] text-[#b7a801]">
+          <p className="text-xs text-start uppercase tracking-[0.35em] text-[#b7a801]">
             Projects
           </p>
-          <h1 className="mt-5 text-4xl font-semibold tracking-tight md:text-6xl">
-            Selected Work Across
-            <br />
-            Leading Destinations
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-zinc-400 md:text-lg">
+          <GradientTitle title="Selected Work Across Leading Destinations" />
+            <p className="text-start mt-6 max-w-2xl text-base leading-8 text-zinc-400 md:text-lg">
             A curated look at the projects that trusted MODERN DUCT for
             diffusers, grilles, dampers, and complete air distribution
             solutions.
           </p>
+         
         </motion.div>
 
         <div className="mt-16 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -35,7 +33,7 @@ export default function ProjectsPage() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: index * 0.04 }}
-              className="group overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_18px_60px_rgba(0,0,0,0.28)]"
+              className="group overflow-hidden rounded-[1rem] border border-white/10 bg-white/5 shadow-[0_18px_60px_rgba(0,0,0,0.28)]"
             >
               <div className="relative h-64 overflow-hidden">
                 <img

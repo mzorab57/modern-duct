@@ -66,67 +66,67 @@ const shuffle = (array) => {
 const squareData = [
   {
     id: 1,
-    src: "../assets/images/modern-1.jpeg",
+    src: "../assets/images/about1.jpeg",
   },
   {
     id: 2,
-    src: "../assets/images/modern-2.jpeg",
+    src: "../assets/images/about2.jpeg",
   },
   {
     id: 3,
-    src: "../assets/images/modern-3.jpeg",
+    src: "../assets/images/about3.jpeg",
   },
   {
     id: 4,
-    src: "../assets/images/modern-4.jpeg",
+    src: "../assets/images/about4.jpeg",
   },
   {
     id: 5,
-    src: "../assets/images/modern-1.jpeg",
+    src: "../assets/images/about5.png",
   },
   {
     id: 6,
-    src: "../assets/images/modern-2.jpeg",
+    src: "../assets/images/about6.png",
   },
   {
     id: 7,
-    src: "../assets/images/modern-3.jpeg",
+    src: "../assets/images/about7.png",
   },
   {
     id: 8,
-    src: "../assets/images/modern-4.jpeg",
+    src: "../assets/images/about8.png",
   },
   {
     id: 9,
-    src: "../assets/images/modern-1.jpeg",
+    src: "../assets/images/about9.png",
   },
-  {
+ {
     id: 10,
-    src: "../assets/images/modern-2.jpeg",
+    src: "../assets/images/about8.png",
   },
   {
     id: 11,
-    src: "../assets/images/modern-3.jpeg",
+    src: "../assets/images/about9.png",
   },
   {
     id: 12,
-    src: "../assets/images/modern-4.jpeg",
+    src: "../assets/images/about4.jpeg",
   },
   {
     id: 13,
-    src: "../assets/images/modern-1.jpeg",  
+    src: "../assets/images/about1.jpeg",  
   },
   {
     id: 14,
-    src: "../assets/images/modern-2.jpeg",
+    src: "../assets/images/about2.jpeg",
   },
   {
     id: 15,
-    src: "../assets/images/modern-4.jpeg",  
+    src: "../assets/images/about5.png",
   },
   {
     id: 16,
-    src: "../assets/images/modern-1.jpeg",  
+    src: "../assets/images/about6.png",
   },
 ];
 

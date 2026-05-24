@@ -88,16 +88,16 @@ export default function ProjectSection() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className=" relative  z-10  mb-16  md:mb-20 "
       >
-        <div className="flex flex-col ">
-          <div className="inline-flex items-center gap-2.5 rounded-full py-2 backdrop-blur-md transition-all">
+        <div className="flex lg:flex-row flex-col items-center ">
+
+          <div className=" items-center gap-2.5 rounded-full py-2 backdrop-blur-md transition-all">
             <span className="text-xs font-extralight uppercase tracking-[0.2em] md:text-sm">
               Our Projects
             </span>
+          <GradientTitle title="Trusted by Leading Projects" />
           </div>
 
-          <GradientTitle title="Trusted by Leading Projects" />
-
-          <div className="mt-2 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div className="mt-2 flex flex-col gap-5  ">
             <p className="max-w-2xl text-base font-light leading-relaxed text-zinc-400 md:text-lg">
               Our products power residential and commercial projects across 25+
               countries - proof of quality you can stand on.
