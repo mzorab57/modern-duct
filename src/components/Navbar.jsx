@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu, X, ArrowRight, ArrowUpRight, MessageCircle } from "lucide-react";
+import { Menu, X, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { socialLinks, whatsappHref, whatsappNumber } from "../data/socialLinks";
+import { socialLinks } from "../data/socialLinks";
 
 const navItems = [
   { label: "Home", to: "/" },
@@ -41,6 +41,14 @@ export default function Navbar() {
   const [hoveredPath, setHoveredPath] = useState(null);
 
   const { scrollY } = useScroll();
+
+  // ئەم بەشە بەرپرسە لە بردنە سەرەوەی پەیجەکە کاتێک بەکارهێنەر کلیک لەسەر لینکەکان دەکات
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "instant" // یان دەتوانیت بڕیاری "smooth" بدەیت ئەگەر بتەوێت بە نەرمی بڕواتە سەرەوە
+    });
+  }, [location.pathname]);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious();
@@ -83,7 +91,6 @@ export default function Navbar() {
             : "bg-transparent"
         }`}
       >
-        {/* هێڵی خوارەوە کە تەنها لەکاتی سکڕۆڵدا دەردەکەوێت */}
         <div 
           className={`absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#b7a801]/30 to-transparent transition-opacity duration-300 ${
             isScrolled ? "opacity-100" : "opacity-0"
@@ -99,8 +106,7 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Desktop Navigation (Premium Editorial Style) */}
-          {/* لابردنی بۆکسەکان و چوارچێوەکان، تەنها تێکستی خاوێن هەیە */}
+          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8 relative h-full">
             {navItems.map((item) => {
               const isActive = location.pathname === item.to;
@@ -112,7 +118,6 @@ export default function Navbar() {
                   onMouseLeave={() => setHoveredPath(null)}
                   className="relative flex items-center h-full text-[13px] tracking-[0.1em] uppercase font-medium transition-colors"
                 >
-                  {/* تێکستەکە - ئەکتیڤ بێت لار و سپی دەبێت */}
                   <span className={`relative z-10 transition-all duration-300 ${
                     isActive 
                       ? "text-white italic" 
@@ -121,7 +126,6 @@ export default function Navbar() {
                     {item.label}
                   </span>
 
-                  {/* هێڵی خلیسکێنە لە سەرەوەی لینکەکە (Magic Line) */}
                   {hoveredPath === item.to && (
                     <motion.div
                       layoutId="navbar-top-line"
@@ -130,7 +134,6 @@ export default function Navbar() {
                     />
                   )}
                   
-                  {/* هێڵی ئەکتیڤ بوون (هەمیشە دەمێنێتەوە کاتێک لە پەیجەکەیت) */}
                   {isActive && (
                     <motion.div
                       layoutId="navbar-active-line"
@@ -143,7 +146,7 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Desktop Call to Action (Minimalist Link لەبری دوگمەی قەرەباڵغ) */}
+          {/* Desktop Call to Action */}
           <div className="hidden lg:flex items-center relative z-50">
             <Link 
               to="/projects"
@@ -165,7 +168,7 @@ export default function Navbar() {
         </div>
       </motion.header>
 
-      {/* Mobile Menu (Editorial & Premium Design) */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -178,11 +181,6 @@ export default function Navbar() {
             <div className="absolute top-0 right-0 w-[80vw] h-[80vw] bg-[#b7a801]/5 blur-[100px] rounded-full pointer-events-none translate-x-1/3 -translate-y-1/3"></div>
 
             <div className="flex-1 flex flex-col justify-center px-8 pt-20 pb-10 relative z-10 h-full overflow-y-auto">
-              
-              <p className="text-[#b7a801] text-xs font-semibold tracking-[0.4em] uppercase mb-8 ml-2">
-                Navigation
-              </p>
-
               <motion.nav 
                 variants={containerVariants}
                 initial="hidden"
@@ -193,17 +191,17 @@ export default function Navbar() {
                   const isActive = location.pathname === item.to;
                   
                   return (
-                    <motion.div key={item.to} variants={itemVariants}>
+                    <div key={item.to} variants={itemVariants}>
                       <NavLink
                         to={item.to}
                         onClick={closeMenu}
-                        className={`group flex items-center gap-4 w-fit`}
+                        className="group flex items-center gap-4 w-fit"
                       >
                         <span className={`h-[2px] transition-all duration-500 ease-out bg-[#b7a801] ${
                           isActive ? "w-8 md:w-12" : "w-0 group-hover:w-6"
                         }`} />
                         
-                        <span className={`text-4xl md:text-6xl tracking-tight transition-all duration-500 ${
+                        <span className={`text-2xl md:text-6xl tracking-tight transition-all duration-500 ${
                           isActive 
                             ? "text-white font-medium italic" 
                             : "text-zinc-500 font-light hover:text-white hover:translate-x-2"
@@ -211,49 +209,10 @@ export default function Navbar() {
                           {item.label}
                         </span>
                       </NavLink>
-                    </motion.div>
+                    </div>
                   );
                 })}
               </motion.nav>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, duration: 0.5 }}
-                className="mt-16 ml-2"
-              >
-                <Link to="/contact" onClick={closeMenu} className="inline-flex items-center gap-3 text-white border-b border-[#b7a801]/50 pb-2 hover:border-[#b7a801] transition-colors">
-                  <span className="text-sm font-medium tracking-widest uppercase">Start a Project</span>
-                  <ArrowRight className="w-4 h-4 text-[#b7a801]" />
-                </Link>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.92, duration: 0.5 }}
-                className="mt-10"
-              >
-                <a
-                  href={whatsappHref}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group flex items-center justify-between rounded-[1.75rem] border border-[#b7a801]/20 bg-[#b7a801]/8 px-5 py-4"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="rounded-2xl bg-[#b7a801]/15 p-3 text-[#d7c82c]">
-                      <MessageCircle className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.35em] text-zinc-500">
-                        WhatsApp
-                      </p>
-                      <p className="mt-1 text-sm text-white">{whatsappNumber}</p>
-                    </div>
-                  </div>
-                  <ArrowUpRight className="h-5 w-5 text-[#d7c82c] transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
-                </a>
-              </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
@@ -278,25 +237,7 @@ export default function Navbar() {
                   ))}
                 </div>
               </motion.div>
-
             </div>
-
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1, duration: 0.5 }}
-              className="px-8 pb-8 flex justify-between items-end text-[10px] md:text-xs text-zinc-500 uppercase tracking-[0.2em] relative z-10"
-            >
-              <div className="flex flex-col gap-2">
-                <a href="mailto:info@modernduct.com" className="hover:text-white transition-colors">info@modernduct.com</a>
-                <a href={whatsappHref} target="_blank" rel="noreferrer" className="hover:text-white transition-colors">{whatsappNumber}</a>
-              </div>
-              <div className="text-right">
-                <p>Sulaymaniyah</p>
-                <p>Iraq</p>
-              </div>
-            </motion.div>
-
           </motion.div>
         )}
       </AnimatePresence>
